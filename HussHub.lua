@@ -1,15 +1,22 @@
 -- HussHub Key System
-local CoreGui = game:GetService("CoreGui")
-local StarterGui = game:GetService("StarterGui")
+-- Made by @avongg6
 
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
+local TweenService = game:GetService("TweenService")
+
+-- ⚠️ CONFIGURARE
 local VALID_KEY = "a73@fdb64€&"
 local DISCORD_LINK = "https://discord.gg/fRymbb9g"
 local PASTEBIN_URL = "https://pastebin.com/raw/m3eQXab5"
 
+-- Șterge GUI vechi
 if CoreGui:FindFirstChild("HussHub_KeySystem") then
     CoreGui.HussHub_KeySystem:Destroy()
 end
 
+-- ============ KEY SYSTEM UI ============
 local keyGui = Instance.new("ScreenGui")
 keyGui.Name = "HussHub_KeySystem"
 keyGui.ResetOnSpawn = false
@@ -17,116 +24,199 @@ keyGui.IgnoreGuiInset = true
 keyGui.DisplayOrder = 99999
 keyGui.Parent = CoreGui
 
+-- Fundal negru (transparent, ca să vezi jocul)
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
 bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+bg.BackgroundTransparency = 0.5
 bg.BorderSizePixel = 0
 bg.Parent = keyGui
 
+-- Fereastra principală
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.fromOffset(420, 420)
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.fromOffset(500, 260)
 mainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-mainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+mainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = bg
-Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 16)
 
+-- Contur subtil
 local stroke = Instance.new("UIStroke", mainFrame)
-stroke.Color = Color3.fromRGB(255, 255, 255)
+stroke.Color = Color3.fromRGB(50, 50, 50)
 stroke.Thickness = 1
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 60)
-title.Position = UDim2.new(0, 0, 0, 20)
-title.BackgroundTransparency = 1
-title.Text = "HussHub"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 42
-title.Font = Enum.Font.GothamBold
-title.Parent = mainFrame
+-- ============ HEADER ============
+-- Iconiță + Titlu
+local headerFrame = Instance.new("Frame")
+headerFrame.Size = UDim2.new(1, -40, 0, 40)
+headerFrame.Position = UDim2.new(0, 20, 0, 20)
+headerFrame.BackgroundTransparency = 1
+headerFrame.Parent = mainFrame
 
-local subtitle = Instance.new("TextLabel")
-subtitle.Size = UDim2.new(1, 0, 0, 25)
-subtitle.Position = UDim2.new(0, 0, 0, 75)
-subtitle.BackgroundTransparency = 1
-subtitle.Text = "Key System"
-subtitle.TextColor3 = Color3.fromRGB(180, 180, 180)
-subtitle.TextSize = 16
-subtitle.Font = Enum.Font.Gotham
-subtitle.Parent = mainFrame
+local icon = Instance.new("TextLabel")
+icon.Size = UDim2.fromOffset(30, 30)
+icon.Position = UDim2.new(0, 0, 0, 5)
+icon.BackgroundTransparency = 1
+icon.Text = "🏛️"
+icon.TextSize = 22
+icon.Font = Enum.Font.GothamBold
+icon.TextColor3 = Color3.fromRGB(255, 255, 255)
+icon.Parent = headerFrame
 
-local instructions = Instance.new("TextLabel")
-instructions.Size = UDim2.new(1, -40, 0, 70)
-instructions.Position = UDim2.new(0, 20, 0, 110)
-instructions.BackgroundTransparency = 1
-instructions.Text = "1. Apasă butonul de mai jos\n2. Intră pe Discord\n3. Găsește key-ul în #keys\n4. Lipește-l mai jos și apasă Submit"
-instructions.TextColor3 = Color3.fromRGB(200, 200, 200)
-instructions.TextSize = 13
-instructions.Font = Enum.Font.Gotham
-instructions.TextWrapped = true
-instructions.TextXAlignment = Enum.TextXAlignment.Left
-instructions.TextYAlignment = Enum.TextYAlignment.Top
-instructions.Parent = mainFrame
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -40, 1, 0)
+titleLabel.Position = UDim2.new(0, 40, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "HussHub"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextSize = 22
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = headerFrame
 
+-- ============ SUBTITLU ============
+local subtitleLabel = Instance.new("TextLabel")
+subtitleLabel.Size = UDim2.new(1, -40, 0, 25)
+subtitleLabel.Position = UDim2.new(0, 20, 0, 65)
+subtitleLabel.BackgroundTransparency = 1
+subtitleLabel.Text = "Made by @avongg6"
+subtitleLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+subtitleLabel.TextSize = 14
+subtitleLabel.Font = Enum.Font.Gotham
+subtitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+subtitleLabel.Parent = mainFrame
+
+-- ============ INPUT KEY ============
+local inputFrame = Instance.new("Frame")
+inputFrame.Size = UDim2.new(1, -40, 0, 45)
+inputFrame.Position = UDim2.new(0, 20, 0, 105)
+inputFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+inputFrame.BorderSizePixel = 0
+inputFrame.Parent = mainFrame
+Instance.new("UICorner", inputFrame).CornerRadius = UDim.new(0, 10)
+
+local inputStroke = Instance.new("UIStroke", inputFrame)
+inputStroke.Color = Color3.fromRGB(55, 55, 55)
+inputStroke.Thickness = 1
+
+-- Iconiță cheie
+local keyIcon = Instance.new("TextLabel")
+keyIcon.Size = UDim2.fromOffset(30, 30)
+keyIcon.Position = UDim2.new(0, 10, 0.5, -15)
+keyIcon.BackgroundTransparency = 1
+keyIcon.Text = "🔑"
+keyIcon.TextSize = 18
+keyIcon.Parent = inputFrame
+
+local keyInput = Instance.new("TextBox")
+keyInput.Size = UDim2.new(1, -55, 1, 0)
+keyInput.Position = UDim2.new(0, 45, 0, 0)
+keyInput.BackgroundTransparency = 1
+keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+keyInput.PlaceholderText = "Enter Key"
+keyInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+keyInput.Text = ""
+keyInput.TextSize = 15
+keyInput.Font = Enum.Font.Gotham
+keyInput.ClearTextOnFocus = false
+keyInput.TextXAlignment = Enum.TextXAlignment.Left
+keyInput.Parent = inputFrame
+
+-- ============ BUTOANE ============
+-- Exit
+local exitBtn = Instance.new("TextButton")
+exitBtn.Size = UDim2.fromOffset(100, 45)
+exitBtn.Position = UDim2.new(0, 20, 0, 175)
+exitBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+exitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+exitBtn.Text = "→ Exit"
+exitBtn.TextSize = 14
+exitBtn.Font = Enum.Font.GothamBold
+exitBtn.BorderSizePixel = 0
+exitBtn.Parent = mainFrame
+Instance.new("UICorner", exitBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", exitBtn).Color = Color3.fromRGB(55, 55, 55)
+
+-- Get Key
 local getKeyBtn = Instance.new("TextButton")
-getKeyBtn.Size = UDim2.new(1, -40, 0, 45)
-getKeyBtn.Position = UDim2.new(0, 20, 0, 190)
-getKeyBtn.BackgroundColor3 = Color3.fromRGB(88, 101, 242)
+getKeyBtn.Size = UDim2.fromOffset(160, 45)
+getKeyBtn.Position = UDim2.new(0, 130, 0, 175)
+getKeyBtn.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
 getKeyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-getKeyBtn.Text = "📋 Copy Discord Link"
-getKeyBtn.TextSize = 15
+getKeyBtn.Text = "🔑 Get Key"
+getKeyBtn.TextSize = 14
 getKeyBtn.Font = Enum.Font.GothamBold
 getKeyBtn.BorderSizePixel = 0
 getKeyBtn.Parent = mainFrame
-Instance.new("UICorner", getKeyBtn).CornerRadius = UDim.new(0, 8)
+Instance.new("UICorner", getKeyBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", getKeyBtn).Color = Color3.fromRGB(55, 55, 55)
 
-local keyInput = Instance.new("TextBox")
-keyInput.Size = UDim2.new(1, -40, 0, 45)
-keyInput.Position = UDim2.new(0, 20, 0, 250)
-keyInput.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-keyInput.PlaceholderText = "Paste your key here..."
-keyInput.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
-keyInput.Text = ""
-keyInput.TextSize = 14
-keyInput.Font = Enum.Font.Gotham
-keyInput.BorderSizePixel = 0
-keyInput.ClearTextOnFocus = false
-keyInput.Parent = mainFrame
-Instance.new("UICorner", keyInput).CornerRadius = UDim.new(0, 8)
-
-local inputStroke = Instance.new("UIStroke", keyInput)
-inputStroke.Color = Color3.fromRGB(60, 60, 60)
-inputStroke.Thickness = 1
-
+-- Submit
 local submitBtn = Instance.new("TextButton")
-submitBtn.Size = UDim2.new(1, -40, 0, 45)
-submitBtn.Position = UDim2.new(0, 20, 0, 310)
-submitBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 80)
+submitBtn.Size = UDim2.fromOffset(180, 45)
+submitBtn.Position = UDim2.new(1, -200, 0, 175)
+submitBtn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 submitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-submitBtn.Text = "✅ Submit Key"
-submitBtn.TextSize = 15
+submitBtn.Text = "→ Submit"
+submitBtn.TextSize = 14
 submitBtn.Font = Enum.Font.GothamBold
 submitBtn.BorderSizePixel = 0
 submitBtn.Parent = mainFrame
-Instance.new("UICorner", submitBtn).CornerRadius = UDim.new(0, 8)
+Instance.new("UICorner", submitBtn).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", submitBtn).Color = Color3.fromRGB(70, 70, 70)
 
+-- ============ STATUS ============
 local statusLabel = Instance.new("TextLabel")
-statusLabel.Size = UDim2.new(1, -40, 0, 30)
-statusLabel.Position = UDim2.new(0, 20, 0, 370)
+statusLabel.Size = UDim2.new(1, -40, 0, 25)
+statusLabel.Position = UDim2.new(0, 20, 1, -30)
 statusLabel.BackgroundTransparency = 1
 statusLabel.Text = ""
 statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
-statusLabel.TextSize = 13
+statusLabel.TextSize = 12
 statusLabel.Font = Enum.Font.Gotham
+statusLabel.TextXAlignment = Enum.TextXAlignment.Left
 statusLabel.Parent = mainFrame
 
+-- ============ DRAGGING (mutare) ============
+local dragging = false
+local dragStart, startPos
+
+headerFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = mainFrame.Position
+    end
+end)
+
+headerFrame.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+headerFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
+
+-- ============ FUNCȚII ============
 local function setStatus(text, color)
     statusLabel.Text = text
     statusLabel.TextColor3 = color or Color3.fromRGB(255, 100, 100)
 end
 
+-- Exit
+exitBtn.MouseButton1Click:Connect(function()
+    keyGui:Destroy()
+end)
+
+-- Get Key (Discord)
 getKeyBtn.MouseButton1Click:Connect(function()
     pcall(function()
         setclipboard(DISCORD_LINK)
@@ -134,13 +224,14 @@ getKeyBtn.MouseButton1Click:Connect(function()
     setStatus("✅ Discord link copiat!", Color3.fromRGB(100, 255, 100))
     pcall(function()
         StarterGui:SetCore("SendNotification", {
-            Title = "HussHub Key",
-            Text = "Discord link copiat!",
-            Duration = 5,
+            Title = "HussHub",
+            Text = "Discord link copiat: discord.gg/fRymbb9g",
+            Duration = 4,
         })
     end)
 end)
 
+-- Submit
 submitBtn.MouseButton1Click:Connect(function()
     local userKey = keyInput.Text
     
@@ -150,7 +241,8 @@ submitBtn.MouseButton1Click:Connect(function()
     end
     
     if userKey == VALID_KEY then
-        setStatus("✅ Key valid! Se încarcă HussHub...", Color3.fromRGB(100, 255, 100))
+        setStatus("✅ Key valid! Se încarcă...", Color3.fromRGB(100, 255, 100))
+        submitBtn.Text = "✅ Loading..."
         task.wait(0.5)
         keyGui:Destroy()
         
@@ -166,12 +258,14 @@ submitBtn.MouseButton1Click:Connect(function()
     end
 end)
 
+-- Enter pe input
 keyInput.FocusLost:Connect(function(enterPressed)
     if enterPressed then
         submitBtn:Activate()
     end
 end)
 
+-- Notificare
 pcall(function()
     StarterGui:SetCore("SendNotification", {
         Title = "HussHub",
