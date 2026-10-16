@@ -3989,11 +3989,11 @@ local windowHeight = math.max(360, math.min(860, viewport.Y - 48))
 local Window = WindUI:CreateWindow({
     Title = "HussHub",
     Icon = "key",
-    Author = "@avongg0",
+    Author = "By @avongg6 @@og.gg.66 | discord.gg/fRymbb9g",
     Folder = "HussValley",
     Size = UDim2.fromOffset(windowWidth, windowHeight),
     Transparent = true,
-    Theme = "Dark",
+    Theme = "Light",
     ToggleKey = Enum.KeyCode.RightShift,
 })
 
