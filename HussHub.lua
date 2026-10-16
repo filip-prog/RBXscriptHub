@@ -1,5 +1,6 @@
 -- HussHub Key System - PREMIUM EDITION
 -- Made by @avongg6
+-- Key saved for 24 hours
 
 local CoreGui = game:GetService("CoreGui")
 local UserInputService = game:GetService("UserInputService")
@@ -11,8 +12,48 @@ local RunService = game:GetService("RunService")
 local VALID_KEY = "duh64bdh637"
 local DISCORD_LINK = "https://discord.gg/fRymbb9g"
 local PASTEBIN_URL = "https://pastebin.com/raw/m3eQXab5"
+local SAVE_FILE = "HussHub_key.txt"
+local KEY_DURATION = 24 * 60 * 60  -- 24 hours in seconds
 
--- Delete old GUI
+-- ============ CHECK SAVED KEY ============
+local function checkSavedKey()
+    if not isfile or not readfile then return false end
+    
+    if isfile(SAVE_FILE) then
+        local ok, content = pcall(readfile, SAVE_FILE)
+        if ok and content then
+            local savedKey, savedTime = content:match("(.-)|(%d+)")
+            if savedKey == VALID_KEY then
+                local savedTimestamp = tonumber(savedTime) or 0
+                local now = os.time()
+                if now - savedTimestamp < KEY_DURATION then
+                    return true  -- Key still valid
+                else
+                    -- Expired, delete file
+                    if delfile then pcall(delfile, SAVE_FILE) end
+                end
+            end
+        end
+    end
+    return false
+end
+
+local function saveKey()
+    if not writefile then return end
+    local content = VALID_KEY .. "|" .. tostring(os.time())
+    pcall(writefile, SAVE_FILE, content)
+end
+
+-- ============ IF KEY ALREADY SAVED, RUN SCRIPT ============
+if checkSavedKey() then
+    print("[HussHub] Saved key found - loading script...")
+    pcall(function()
+        loadstring(game:HttpGet(PASTEBIN_URL))()
+    end)
+    return
+end
+
+-- ============ DELETE OLD GUI ============
 if CoreGui:FindFirstChild("HussHub_KeySystem") then
     CoreGui.HussHub_KeySystem:Destroy()
 end
@@ -25,7 +66,6 @@ keyGui.IgnoreGuiInset = true
 keyGui.DisplayOrder = 99999
 keyGui.Parent = CoreGui
 
--- Dark blur background
 local bg = Instance.new("Frame")
 bg.Size = UDim2.new(1, 0, 1, 0)
 bg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
@@ -33,7 +73,6 @@ bg.BackgroundTransparency = 0.4
 bg.BorderSizePixel = 0
 bg.Parent = keyGui
 
--- Main window
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.fromOffset(540, 340)
@@ -44,7 +83,6 @@ mainFrame.BorderSizePixel = 0
 mainFrame.Parent = bg
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 20)
 
--- Animated glow stroke
 local glowStroke = Instance.new("UIStroke", mainFrame)
 glowStroke.Color = Color3.fromRGB(100, 120, 255)
 glowStroke.Thickness = 2
@@ -63,14 +101,13 @@ task.spawn(function()
     end
 end)
 
--- ============ HEADER ============
+-- Header
 local headerFrame = Instance.new("Frame")
 headerFrame.Size = UDim2.new(1, -40, 0, 55)
 headerFrame.Position = UDim2.new(0, 20, 0, 22)
 headerFrame.BackgroundTransparency = 1
 headerFrame.Parent = mainFrame
 
--- Icon background
 local iconBg = Instance.new("Frame")
 iconBg.Size = UDim2.fromOffset(40, 40)
 iconBg.Position = UDim2.new(0, 0, 0, 7)
@@ -88,7 +125,6 @@ icon.Font = Enum.Font.GothamBold
 icon.TextColor3 = Color3.fromRGB(255, 255, 255)
 icon.Parent = iconBg
 
--- Title
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1, -55, 0, 30)
 titleLabel.Position = UDim2.new(0, 55, 0, 2)
@@ -100,7 +136,6 @@ titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Parent = headerFrame
 
--- Subtitle (in header)
 local subtitleLabel = Instance.new("TextLabel")
 subtitleLabel.Size = UDim2.new(1, -55, 0, 20)
 subtitleLabel.Position = UDim2.new(0, 55, 0, 30)
@@ -112,7 +147,7 @@ subtitleLabel.Font = Enum.Font.Gotham
 subtitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 subtitleLabel.Parent = headerFrame
 
--- ============ DIVIDER ============
+-- Divider
 local divider = Instance.new("Frame")
 divider.Size = UDim2.new(1, -40, 0, 1)
 divider.Position = UDim2.new(0, 20, 0, 92)
@@ -120,7 +155,7 @@ divider.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
 divider.BorderSizePixel = 0
 divider.Parent = mainFrame
 
--- ============ GREETING ============
+-- Greeting
 local greetingLabel = Instance.new("TextLabel")
 greetingLabel.Size = UDim2.new(1, -40, 0, 20)
 greetingLabel.Position = UDim2.new(0, 20, 0, 105)
@@ -132,7 +167,7 @@ greetingLabel.Font = Enum.Font.Gotham
 greetingLabel.TextXAlignment = Enum.TextXAlignment.Left
 greetingLabel.Parent = mainFrame
 
--- ============ KEY INPUT ============
+-- Key Input
 local inputFrame = Instance.new("Frame")
 inputFrame.Size = UDim2.new(1, -40, 0, 52)
 inputFrame.Position = UDim2.new(0, 20, 0, 135)
@@ -145,7 +180,6 @@ local inputStroke = Instance.new("UIStroke", inputFrame)
 inputStroke.Color = Color3.fromRGB(50, 50, 58)
 inputStroke.Thickness = 1
 
--- Key icon
 local keyIcon = Instance.new("TextLabel")
 keyIcon.Size = UDim2.fromOffset(30, 30)
 keyIcon.Position = UDim2.new(0, 14, 0.5, -15)
@@ -168,8 +202,7 @@ keyInput.ClearTextOnFocus = false
 keyInput.TextXAlignment = Enum.TextXAlignment.Left
 keyInput.Parent = inputFrame
 
--- ============ BUTTONS ============
--- Exit
+-- Buttons
 local exitBtn = Instance.new("TextButton")
 exitBtn.Size = UDim2.fromOffset(115, 52)
 exitBtn.Position = UDim2.new(0, 20, 0, 200)
@@ -183,7 +216,6 @@ exitBtn.Parent = mainFrame
 Instance.new("UICorner", exitBtn).CornerRadius = UDim.new(0, 12)
 Instance.new("UIStroke", exitBtn).Color = Color3.fromRGB(50, 50, 58)
 
--- Get Key
 local getKeyBtn = Instance.new("TextButton")
 getKeyBtn.Size = UDim2.fromOffset(170, 52)
 getKeyBtn.Position = UDim2.new(0, 145, 0, 200)
@@ -197,7 +229,6 @@ getKeyBtn.Parent = mainFrame
 Instance.new("UICorner", getKeyBtn).CornerRadius = UDim.new(0, 12)
 Instance.new("UIStroke", getKeyBtn).Color = Color3.fromRGB(50, 50, 58)
 
--- Submit
 local submitBtn = Instance.new("TextButton")
 submitBtn.Size = UDim2.fromOffset(180, 52)
 submitBtn.Position = UDim2.new(1, -200, 0, 200)
@@ -210,7 +241,6 @@ submitBtn.BorderSizePixel = 0
 submitBtn.Parent = mainFrame
 Instance.new("UICorner", submitBtn).CornerRadius = UDim.new(0, 12)
 
--- Hover effect
 submitBtn.MouseEnter:Connect(function()
     TweenService:Create(submitBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(120, 140, 255)}):Play()
 end)
@@ -218,21 +248,7 @@ submitBtn.MouseLeave:Connect(function()
     TweenService:Create(submitBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(100, 120, 255)}):Play()
 end)
 
-exitBtn.MouseEnter:Connect(function()
-    TweenService:Create(exitBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(28, 28, 34)}):Play()
-end)
-exitBtn.MouseLeave:Connect(function()
-    TweenService:Create(exitBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(18, 18, 22)}):Play()
-end)
-
-getKeyBtn.MouseEnter:Connect(function()
-    TweenService:Create(getKeyBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(28, 28, 34)}):Play()
-end)
-getKeyBtn.MouseLeave:Connect(function()
-    TweenService:Create(getKeyBtn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(18, 18, 22)}):Play()
-end)
-
--- ============ STATUS ============
+-- Status
 local statusLabel = Instance.new("TextLabel")
 statusLabel.Size = UDim2.new(1, -40, 0, 25)
 statusLabel.Position = UDim2.new(0, 20, 1, -35)
@@ -244,7 +260,7 @@ statusLabel.Font = Enum.Font.Gotham
 statusLabel.TextXAlignment = Enum.TextXAlignment.Left
 statusLabel.Parent = mainFrame
 
--- ============ FOOTER ============
+-- Footer
 local footerLabel = Instance.new("TextLabel")
 footerLabel.Size = UDim2.new(1, -40, 0, 20)
 footerLabel.Position = UDim2.new(0, 20, 1, -18)
@@ -256,7 +272,7 @@ footerLabel.Font = Enum.Font.Gotham
 footerLabel.TextXAlignment = Enum.TextXAlignment.Center
 footerLabel.Parent = mainFrame
 
--- ============ DRAGGING ============
+-- Dragging
 local dragging = false
 local dragStart, startPos
 
@@ -281,7 +297,7 @@ headerFrame.InputEnded:Connect(function(input)
     end
 end)
 
--- ============ FUNCTIONS ============
+-- Functions
 local function setStatus(text, color)
     statusLabel.Text = text
     statusLabel.TextColor3 = color or Color3.fromRGB(255, 100, 100)
@@ -316,6 +332,7 @@ submitBtn.MouseButton1Click:Connect(function()
     if userKey == VALID_KEY then
         setStatus("✅ Valid key! Loading...", Color3.fromRGB(100, 255, 100))
         submitBtn.Text = "✅ Loading..."
+        saveKey()  -- Save key for 24 hours
         task.wait(0.4)
         keyGui:Destroy()
         
@@ -328,7 +345,6 @@ submitBtn.MouseButton1Click:Connect(function()
         end
     else
         setStatus("❌ Invalid key! Try again.", Color3.fromRGB(255, 100, 100))
-        -- Shake animation
         local originalPos = mainFrame.Position
         for i = 1, 3 do
             mainFrame.Position = originalPos + UDim2.fromOffset(12, 0)
