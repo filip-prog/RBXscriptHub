@@ -3989,8 +3989,7 @@ local windowHeight = math.max(360, math.min(860, viewport.Y - 48))
 local Window = WindUI:CreateWindow({
     Title = "HussHub",
     Icon = "bird",
-    Author = "By @avongg6
-@Og.gg.66 | discord.gg/fRymbb9g",
+    Author = "By @avongg6 @@og.gg.66 | discord.gg/fRymbb9g",
     Folder = "HussHub",
     Size = UDim2.fromOffset(windowWidth, windowHeight),
     Transparent = true,
